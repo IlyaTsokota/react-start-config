@@ -13,9 +13,22 @@ module.exports = (_, argv) => {
         return [isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader',];
     }
 
+    console.log(__dirname);
 
     const settings = {
         mode,
+        resolve: {
+            extensions: ['.js', '.jsx', '.ts'],
+            alias: {
+                Utils: path.resolve(__dirname, 'src/utils/'),
+                Components: path.resolve(__dirname, 'src/components/'),
+                Actions: path.resolve(__dirname, 'src/actions/'),
+                ActionTypes: path.resolve(__dirname, 'src/action-types/'),
+                Containers: path.resolve(__dirname, 'src/containers/'),
+                Reducers: path.resolve(__dirname, 'src/reducers/'),
+                Services: path.resolve(__dirname, 'src/services/'),
+            },
+        },
         module: {
             rules: [
                 //
@@ -87,22 +100,9 @@ module.exports = (_, argv) => {
             }),
             new MinifyPlugin(),
         ],
-        resolve: {
-            alias: {
-                Utils: path.resolve(__dirname, 'src/js/utils/'),
-                Components: path.resolve(__dirname, 'src/js/components/'),
-                Actions: path.resolve(__dirname, 'src/js/actions/'),
-                ActionTypes: path.resolve(__dirname, 'src/js/action-types/'),
-                Containers: path.resolve(__dirname, 'src/js/containers/'),
-                Reducers: path.resolve(__dirname, 'src/js/reducers/'),
-                Services: path.resolve(__dirname, 'src/js/services/'),
-            },
-        },
+
         devServer: {
-            historyApiFallback: true,
             open: true,
-            compress: true,
-            hot: true,
             port: 8080,
             watchFiles: ['src/**/*', 'public/**/*'],
         },
@@ -110,7 +110,9 @@ module.exports = (_, argv) => {
 
     if (isDevelopment) {
         settings.devtool = 'source-map';
-        settings.performance.hints = false;
+        settings.performance = {
+            hints: false
+        };
     }
 
     return settings;
